@@ -10,6 +10,8 @@ namespace tcpScannerWChannels
     {
         static void Main(string[] args)
         {
+            var watch = new System.Diagnostics.Stopwatch();
+            watch.Start();
             var target = "scanme.nmap.org";
             if (args.Length == 2)
                 target = args[1];
@@ -20,8 +22,11 @@ namespace tcpScannerWChannels
 
             Console.WriteLine($"The following ports are open on {target}");
 
+            watch.Stop();
             foreach (var port in results)
                 Console.WriteLine($"port {port} is open");
+
+            Console.WriteLine($"Scan of {target} completed in {watch.Elapsed}");
         }
 
 
@@ -54,7 +59,7 @@ namespace tcpScannerWChannels
                 portCheckerTasks.Add(Task.Run(() => CheckPort(target, scanChannel.Reader, resultsChannel.Writer)));
             }
 
-            for (int i = 0; i <= 1000; i++)
+            for (int i = 0; i <= 100; i++)
                 scanChannel.Writer.TryWrite(i);
 
             scanChannel.Writer.Complete();
